@@ -1,0 +1,2175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>The Responsive Event Search</title>
+
+<!-- We link the CDN css files here -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Material Icon -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+
+<style type="text/css">
+  .main{
+    width: 1250px;
+    margin: auto;
+  }
+
+  .formcontainer{
+    width: 900px;
+    margin: auto;
+  }
+
+
+  fieldset{
+    border: 1px solid;
+    border-radius: 6px;
+    border-color: rgb(204,204,204);
+    background-color: rgb(248,248,248);
+  }
+
+  #header{
+    margin-left: 30px;
+    margin-top: 10px;
+  }
+
+  .userInput{
+    width: 600px;
+    margin-left: 150px;
+  }
+
+  .important{
+    color: red;
+  }
+
+  #keywordFeedback{
+    margin-left: 160px;
+    display: none;
+    color: red;
+  }
+
+  #otherLocationInput{
+    margin-left: 180px;
+  }
+
+  #locationFeedback{
+    margin-left: 180px;
+    display: none;
+    color: red;
+  }
+
+  #search{
+     margin-left: 10px;
+  }
+
+  #clear{
+    margin-left: 20px;
+    border-color: rgb(210,210,210);
+  }
+
+  #tableChoice{
+    margin-top: 30px;
+    margin-left: 550px;
+    align-content: center;
+  }
+
+  .progress{
+    margin-top: 100px;
+    margin-left: 175px;
+    width: 900px;
+    visibility: hidden;
+  }
+
+
+  #resultTable{
+    position: relative;
+    top: -50px;
+    width: 900px;
+    margin: auto;
+  }
+
+  #detailHeader{
+    position: relative;
+    top: -50px;
+    width: 900px;
+    margin: auto;
+  }
+
+
+  #detailTable{
+    position: relative;
+    top: -50px;
+    width: 900px;
+    margin: auto;
+  }
+
+  #noRecord{
+    background-color: rgb(255, 242,205);
+    border-radius: 4px;
+    border: none;
+  }
+
+   #noRecord tr td{
+    border: none;
+  }
+
+  .btn-light{
+    background-color: white;
+  }
+
+  #favoriateIcon{
+    border-color: rgb(210,210,210);
+  }
+
+  #favButton2{
+    position: relative;
+    left: 750px;
+    border-color: rgb(210,210,210);
+  }
+
+  #detailButton{
+    position: relative;
+    left: 815px;
+    margin-bottom: 8px;
+    border-color: rgb(210,210,210);
+  }
+
+  #listButton{
+     border-color: rgb(210,210,210);
+  }
+
+  #twitterButton{
+    position: relative;
+    left: 750px;
+  }
+
+  .tab{
+    overflow: hidden;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .tab button {
+    background-color: inherit;
+    float: right;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .tab button:hover {
+    border: 1px solid rgb(215,215,215);
+    background-color: white;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 4px;
+  }
+  .column {
+  float:left;
+  max-width: 33%;
+  padding: 4px;
+  }
+
+  .column img {
+    width: 95%;
+    height: 40%;
+    margin-top: 6px;
+    vertical-align: middle;  
+    border: 1px solid rgb(215,215,215);
+  }
+
+  #seatMapModal{
+    display: none;
+  }
+
+  #viewSeatMap{
+    color: rgb(41,135, 254);
+  }
+
+   #eventTabContent{
+    display: block;
+   }
+
+  .tabcontent {
+    display: none;
+  }
+
+  #firstTeamPhotos{
+    margin-bottom: 50px;
+  }
+
+  #secondTeamPhotos{
+    position: relative;
+    top: 100px;
+  }
+
+  .artistPhotoContainer{
+    margin-bottom: 150px;
+  }
+
+  #artTabContent{
+    margin-bottom: 100px;
+  }
+
+  #showMore{
+    position: relative;
+    left: 45%;
+  }
+
+  #map{
+  margin-top: -200px;
+  position: relative;
+  width: 100%;
+  height: 200px;
+  }
+
+  #eventTabTable tr:nth-child(odd) {background-color: #f2f2f2;}
+  #sptifyInfoTable tr:nth-child(odd) {background-color: #f2f2f2;}
+  #venueTable tr:nth-child(odd) {background-color: #f2f2f2;}
+
+
+</style>
+
+</head>
+<body onload="init()">
+
+  <div class = "main" ng-app="myApp">
+    <div class="col-md-12"></div>
+    <div class="col-md-12"></div>
+    <div class="col-md-12"></div>
+    <p id="hiddenId"></p>
+    <div class="formcontainer">
+      <form class="main-form" novalidate>
+        <fieldset id="fieldset">
+            <p id ='header' class="h5 mb-4 text-center"> Entertainment Event Ticket Search </p>
+            <div class="userInput">
+              <div class = "form-group row">
+                <label for="keyword" class = "col-md-1 col-form-label">Keyword<span class="important">*</span></label>
+                <div class="col-md-2"></div>
+
+                <input class="form-control col-md-9" type="text" id="keyword" name="keyword" placeholder="Enter Artist, Team or Event Name (eg. Lakers)" required>
+                <div id="keywordFeedback">Please enter a keyword.</div>   
+              </div>
+
+              <div class = "form-group row">
+                <label for="category" class = "col-md-1 col-form-label">Category</label>
+                <div class="col-md-2"></div>   
+                <select class="form-control col-md-3" id="category" name="category">
+                  <option value="default">All</option>
+                  <option value="music">Music</option>
+                  <option value="sports">Sports</option>
+                  <option value="arts&theatre">Arts & Theatre</option>
+                  <option value="film">Film</option>
+                  <option value="miscellaneous">Miscellaneous</option>
+                </select>
+              </div>
+
+              <div class="form-group row">
+                <label for="distance" class = "col-md-1 control-label">Distance</label>
+                <div class="col-md-2"></div>
+                <input class="form-control col-md-3" type="text" id = "distance" placeholder="10">
+                <div class="col-md-1"></div>
+                <select class="form-control col-md-3" id="measurement">
+                  <option value="default">Miles</option>
+                  <option value="km">Kilometers</option>
+                </select>      
+              </div>
+
+              <div class="form-group row">
+                <label for="locationChoice" class="col-md-1 control-label">From<span class="important">*</span></label>
+                <div class="col-md-2"></div>
+                <div class="form-check" id="locationChoice">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="userLocation" id="currentLocation" value="option1" checked onclick="makeRequired()">
+                    Current location
+                  </label><br>
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="userLocation" id="otherLocation" value="option2" onclick="makeRequired()">
+                    Other.Please Specify: <br>
+                  </label>
+                </div>
+                  <input id = "hidelat" type="hidden" name="herelat" value="">
+                  <input id = "hidelon" type="hidden" name="herelon" value="">
+                  <input class="form-control col-md-8" type="text" id="otherLocationInput" name="otherLocationInput"> 
+                  <div id="locationFeedback">Please enter a location.</div>
+              </div>
+
+                <div class="form-group row">
+                  <button id="search" type="submit" class="btn btn-primary btn-sm"><span id ="searchIcon"><i class="material-icons" style="vertical-align: middle;">search</i></span>Search</button>
+
+                  <button id="clear" type="submit" class="btn btn-light btn-sm" onclick="clearAll()"><i class="material-icons" style="vertical-align: middle;">clear_all</i>Clear</button>
+                </div>
+
+              </div>
+        </fieldset>
+      </form>
+    </div>
+
+    <div id = "tableChoice" class="form-group row" align="center">
+      <button id="resultsButton" class="btn btn-primary btn-sm">Results</button>
+      <button id="favoriatesButton" class="btn btn-light btn-sm"><span style="color: blue;">Favoriates</span></button>
+    </div>
+
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width:50%"></div>
+    </div>
+
+    <div id = "resultTable">
+      
+    </div>
+
+    <div id = "detailHeader">
+
+    </div>
+
+    <div id = "detailTable" class="table mt-1">
+
+    </div>
+
+  </div>
+
+<!-- Javascript files should be linked at the bottom of the page -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+
+<!-- Latest compiled and minified Javascript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<!-- angularjs here -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-messages.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.9/angular-material.min.js"></script>
+
+<!-- twitter -->
+<script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
+
+
+<script type="text/javascript">
+  // autocomplete here
+      angular
+            .module('myApp', ['ngMaterial']); 
+
+</script>
+
+
+
+<script type="text/javascript">
+    var searchButton = document.querySelector('#search');
+    var currentLat;
+    var currentLon;
+
+    // initial setup when users just open the page
+    function init(){
+      var xmlhttp = new XMLHttpRequest(); // a xmlrequest for getting user current location
+
+      xmlhttp.open("GET", "http://ip-api.com/json", true);
+
+      xmlhttp.onload = function(){
+        // check if the status is 200
+        if (this.status === 200){
+          var jsonObj = JSON.parse(xmlhttp.responseText);
+
+          currentLat = jsonObj.lat;
+          currentLon = jsonObj.lon;
+          document.querySelector("#hidelat").value = currentLat;
+          document.querySelector("#hidelon").value = currentLon;
+          //able the search button if we get latitude or longitude
+          if(currentLat == null || currentLon == null || currentLat == undefined || currentLon == undefined){
+            searchButton.disabled = true;
+          }
+          else if(document.querySelector('#keyword').value == ""){
+            searchButton.disabled = true;
+          }
+          else{
+            searchButton.disabled = false;
+          }
+        }
+      }
+
+      xmlhttp.send("");
+
+      if(document.querySelector("#currentLocation").checked){
+        document.querySelector("#otherLocationInput").disabled = true;
+      }
+    }
+
+    function makeRequired(){
+      document.querySelector("#otherLocationInput").required = document.querySelector("#otherLocation").checked;
+      document.querySelector("#otherLocationInput").disabled = document.querySelector("#currentLocation").checked;
+    }
+
+    function clearAll(){
+    document.querySelector(".main-form").reset();
+    document.getElementById("resultTable").innerHTML = "";
+    document.getElementById("detailHeader").innerHTML = "";
+    document.getElementById("detailTable").innerHTML = "";
+    }
+
+</script>
+
+
+
+<script type="text/javascript">
+
+  // form validation code here
+  var keywordInput = document.getElementById('keyword');
+  var currentLocation = document.getElementById('currentLocation');
+  var otherLocation = document.getElementById('otherLocation');
+  var userLocationInput = document.getElementById('otherLocationInput');
+  var re = new RegExp('^\\s+$');
+
+  // if user move out the keyword input, check for validation
+  keywordInput.addEventListener('focusout', function(event){
+      if(keywordInput.checkValidity() === false){
+        document.getElementById('keywordFeedback').style.display = 'block';
+        document.getElementById('keyword').style.borderColor = 'red';
+        document.getElementById('search').disabled = true;
+      }
+  });
+
+  // check validation if user is typing
+  keywordInput.addEventListener('keyup', function(event){
+
+    // if whitespace, show error
+    if(re.test(keywordInput.value)){
+      document.getElementById('keywordFeedback').style.display = 'block';
+      document.getElementById('keyword').style.borderColor = 'red';
+      document.getElementById('search').disabled = true;
+    }
+
+    else if(keywordInput.checkValidity() === true){
+      document.getElementById('keywordFeedback').style.display = 'none';
+      document.getElementById('keyword').style.borderColor = "rgb(206,212,218)";
+      if(otherLocation.checked === true && userLocationInput.value != ""){
+        document.getElementById('search').disabled = false;
+      }
+      else if(currentLocation.checked && currentLat != null && currentLon != null){
+        document.getElementById('search').disabled = false;
+      }
+      else{
+        document.getElementById('search').disabled = true;
+      }
+      
+    }
+
+    // not validate, show error and disable the button
+    else{
+      document.getElementById('keywordFeedback').style.display = 'block';
+      document.getElementById('keyword').style.borderColor = 'red';
+      document.getElementById('search').disabled = true;
+    }
+  });
+
+  currentLocation.addEventListener('click', function(event){
+    document.getElementById('locationFeedback').style.display = 'none';
+    userLocationInput.style.borderColor = 'rgb(206,212,218)';
+    if(keywordInput.checkValidity() === true){
+      document.getElementById('search').disabled = false;
+      document.getElementById('keyword').style.borderColor = "rgb(206,212,218)";
+    }
+  });
+
+  otherLocation.addEventListener('click', function(event){
+    if(keywordInput.checkValidity() === false){
+      document.getElementById('search').disabled = true;
+    }
+
+    else if(userLocationInput.value == ""){
+      document.getElementById('search').disabled = true;
+    }
+  });
+
+  userLocationInput.addEventListener('focusout', function(event){
+    if(keywordInput.checkValidity() === false && userLocationInput.checkValidity() === false){
+      document.getElementById('search').disabled = true;
+      userLocationInput.style.borderColor = 'red';
+      document.getElementById('locationFeedback').style.display = 'block';
+    }
+    else if(userLocationInput.checkValidity() === false && keywordInput.checkValidity() === true){
+      document.getElementById('locationFeedback').style.display = 'block';
+      userLocationInput.style.borderColor = 'red';
+      document.getElementById('search').disabled = true;
+     }
+  });
+
+  userLocationInput.addEventListener('keyup', function(event){
+    if(keywordInput.checkValidity() === false && userLocationInput.checkValidity() === true){
+      document.getElementById('search').disabled = true;
+      document.getElementById('locationFeedback').style.display = 'none';
+      userLocationInput.style.borderColor = 'rgb(206,212,218)';
+    }
+
+    // if location is white space, show error and disable the search button
+    else if(re.test(userLocationInput.value)){
+      document.getElementById('locationFeedback').style.display = 'block';
+      userLocationInput.style.borderColor = 'red';
+      document.getElementById('search').disabled = true;
+    }
+
+    else if(userLocationInput.checkValidity() === true){
+      document.getElementById('search').disabled = false;
+      document.getElementById('locationFeedback').style.display = 'none';
+      userLocationInput.style.borderColor = 'rgb(206,212,218)';
+    }
+
+    // no input, then show error and disable the search button
+    else{
+      document.getElementById('search').disabled = true;
+      document.getElementById('locationFeedback').style.display = 'block';
+      userLocationInput.style.borderColor = 'red';
+    }
+  });
+
+</script>
+
+
+
+<script type="text/javascript">
+  var detailTable = document.getElementById("detailTable");
+  var resultTable = document.getElementById("resultTable");
+  var detailHeader = document.getElementById("detailHeader");
+
+  function setArtist(){
+    document.getElementById("artistButton").style.border = "1px solid rgb(215,215,215)";
+    document.getElementById("eventInfoButton").style.border = "none";
+    document.getElementById("venueButton").style.border = "none";
+    document.getElementById("upcomingButton").style.border = "none";
+
+    document.getElementById("eventTabContent").style.display = "none";
+    document.getElementById("venueTabContent").style.display = "none";
+    document.getElementById("upcomingEventContent").style.display = "none";
+    document.getElementById("artTabContent").style.display = "block";
+  }
+
+  function setEvent(){
+    document.getElementById("eventInfoButton").style.border = "1px solid rgb(215,215,215)";
+    document.getElementById("venueButton").style.border = "none";
+    document.getElementById("artistButton").style.border = "none";
+    document.getElementById("upcomingButton").style.border = "none";
+
+    document.getElementById("artTabContent").style.display = "none";
+    document.getElementById("venueTabContent").style.display = "none";
+    document.getElementById("upcomingEventContent").style.display = "none";
+    document.getElementById("eventTabContent").style.display = "block";
+  }
+
+  function setVenue(){
+    document.getElementById("venueButton").style.border = "1px solid rgb(215,215,215)";
+    document.getElementById("artistButton").style.border = "none";
+    document.getElementById("upcomingButton").style.border = "none";
+    document.getElementById("eventInfoButton").style.border = "none";
+
+    document.getElementById("eventTabContent").style.display = "none";
+    document.getElementById("artTabContent").style.display = "none";
+    document.getElementById("upcomingEventContent").style.display = "none";
+    initMap();
+    document.getElementById("venueTabContent").style.display = "block";
+  }
+
+  function setUpcoming(){
+    document.getElementById("upcomingButton").style.border = "1px solid rgb(215,215,215)";
+    document.getElementById("venueButton").style.border = "none";
+    document.getElementById("artistButton").style.border = "none";
+    document.getElementById("eventInfoButton").style.border = "none";
+
+    document.getElementById("eventTabContent").style.display = "none";
+    document.getElementById("artTabContent").style.display = "none";
+    document.getElementById("venueTabContent").style.display = "none";
+    document.getElementById("upcomingEventContent").style.display = "block";
+  }
+
+  function alterColor(tableId){
+    $(tableId).css({
+      "background-color": "rgb(240, 240, 240)",
+    });
+  }
+
+  function initMap(){
+  if(document.getElementById('map') != null){
+    var directionsService = new google.maps.DirectionsService();
+    var directionsDisplay = new google.maps.DirectionsRenderer();
+    var checkcheck = document.getElementById("currentLocation");
+    if(document.querySelector("#currentLocation").checked){
+      var pinpoint = new google.maps.LatLng(34.05, -118.267);
+    }
+    else{
+      var pinpoint = new google.maps.LatLng(40.759, -73.984);
+    } 
+    var map = new google.maps.Map(document.getElementById('map'), {zoom: 8, center: pinpoint});
+    var marker =  new google.maps.Marker({position: pinpoint, map: map});
+  }
+  }
+
+  function listButtonBack(){
+    detailHeader.style.display = "none";
+    detailTable.style.display = "none";
+    resultTable.style.display = "block";
+  }
+
+  function detailButtonCliked(){
+    resultTable.style.display = "none";
+    detailHeader.style.display = "block";
+    detailTable.style.display = "block";
+  }
+
+  function showModal(){
+    document.getElementById("seatMapModal").style.display = "block";
+  }
+
+  function hiddenModal(){
+    document.getElementById("seatMapModal").style.display = "none";
+  }
+
+  // function to create detail tabs
+  function createDetailTable(eventTitle, performerArr, venue, time, category, priceRange, ticketStatus, ticketUrl, seatMap){
+    detailTable.innerHTML = ""; 
+
+    if(performerArr.length != 0){
+      var artistOrTeam = performerArr[0];
+      for(var t = 1; t < performerArr.length; t++){
+        var performer = performerArr[t];
+        artistOrTeam = artistOrTeam + '|' + performer;
+      }
+
+    }
+    else{
+      artistOrTeam = null;
+    }
+
+    var twitterTeam;
+    if(artistOrTeam != null){
+      twitterTeam = artistOrTeam.replace(/\s/g, "%20");
+      twitterTeam = twitterTeam.replace('|', "%20vs.%20");
+    }
+    var twitterVenue = venue.replace(/\s/g, "%20");
+
+    // general setup
+    var headText = '<h5 align="center">';
+    headText += eventTitle;
+    headText += '</h5>';
+    headText += '<div>';
+    headText += '<button id = "listButton" class="btn btn-light btn-sm" onclick = "listButtonBack()"><i class = "material-icons" style="vertical-align: middle;">keyboard_arrow_left</i>List</button>';
+    headText += '<a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Check%20out';
+    headText += twitterTeam;
+    headText +='%20located%20at%20';
+    headText += twitterVenue;
+    headText += '.Website:';
+    headText += ticketUrl;
+    headText += '"><button id="twitterButton" class="btn btn-sm"><img src="http://csci571.com/hw/hw8/Images/Twitter.png" height="34" width="36"></button></a>';
+    headText += '<button id="favButton2" class="btn btn-light btn-sm"><i class="material-icons">star_border</i></button></div>';
+    headText += '<div class="tab"><button id="upcomingButton" class="tablinks btn btn-light" onclick="setUpcoming()"><span style="color: blue;">Upcoming Events</span></button><button id="venueButton" class="tablinks btn btn-light" onclick="setVenue()"><span style="color: blue;">Venue</span></button><button id="artistButton" class="tablinks btn btn-light" onclick="setArtist()"><span style="color: blue;">Artist/Teams</span></button><button id= "eventInfoButton" class="tablinks btn btn-light" style = "border: 1px solid rgb(215,215,215);" onclick="setEvent()"><span style="color: blue;">Event</span></button></div>';
+
+    headText += '<div id="seatMapModal" class="modal" tabindex="-1" role="dialog">';
+    headText += '<div class="modal-dialog" role="document">';
+    headText += '<div class="modal-content">';
+    headText += '<div class="modal-header">';
+    headText += '<h5 class="modal-title">View Seat Map</h5>';
+    headText += '<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick = "hiddenModal()">';
+    headText += '<span aria-hidden="true">&times;</span></button></div>';
+    headText += '<div class="modal-body" align-content="center">';
+    headText += '<a href="';
+    headText += seatMap;
+    headText += '" target="_blank">';
+    headText += '<img src="';
+    headText += seatMap;
+    headText += '" width=95% height=85% align="middle">';
+    headText += '</a></div>';
+    headText += '<div class="modal-footer"><button type="button" class="btn btn-light" data-dismiss="modal" onclick = "hiddenModal()">Close</button></div></div></div></div>';
+
+    detailHeader.innerHTML = headText;
+
+    // this part is for event tab
+    var text = '<div id="eventTabContent" class = "tabcontent">';
+    text += '<table id="eventTabTable" class="table" width=100% style="margin-top: 20px;"><tbody><tr>';
+
+    if(artistOrTeam != null){
+      text += '<td width = 28%>Artist/Team(s)</td>';
+      text += '<td width = 72%>';
+      text += artistOrTeam;
+      text += '</td></tr>';
+    }
+
+    if(venue != null){
+      text += '<tr><td width = 28%>Venue</td>';
+      text += '<td width = 72%>';
+      text += venue;
+      text += '</td></tr>';
+    }
+    if(time != null){
+      text += '<tr><td width = 28%>Time</td>';
+      text += '<td width = 72%>';
+      text += time;
+      text += '</td></tr>';
+    }
+    if(category != null){
+      text += '<tr><td width = 28%>Category</td>';
+      text += '<td width = 72%>';
+      text += category;
+      text += '</td></tr>';
+    }
+    if(priceRange != null){
+      text += '<tr><td width = 28%>Price Range</td>';
+      text += '<td width = 72%>';
+      text += priceRange;
+      text += '</td></tr>';
+    }
+    if(ticketStatus != null){
+      text += '<tr><td width = 28%>Ticket Status</td>';
+      text += '<td width = 72%>';
+      text += ticketStatus;
+      text += '</td></tr>';
+    }
+    if(ticketUrl != null){
+      text += '<tr><td width = 28%>Buy Ticket At</td>';
+      text += '<td width = 72%>';
+      text += '<a href="';
+      text += ticketUrl;
+      text += '" target="_blank">';
+      text += 'Ticketmaster</a>';
+      text += '</td></tr>';
+    }
+    if(seatMap != null){
+      text += '<tr><td width = 28%>Buy Ticket At</td>';
+      text += '<td width = 72%>';
+      text += '<span id = "viewSeatMap" style="cursor: pointer;" onclick = "showModal()">View Seat Map Here</span>';
+      text += '</td></tr>';
+    }
+
+    text += '</tbody></table>';
+    text += '</div>';  // close div for event tab
+    // alterColor('#eventTabTable tr:even');
+    //resultTable.innerHTML = text;
+
+    // text += '<div class="modal" tabindex="-1" role="dialog">';
+    // text += '<div class="modal-dialog" role="document">';
+    // text += '<div class="modal-content">';
+    // text += '<div class="modal-header">';
+    // text += '<h5 class="modal-title">View Seat Map</h5>';
+    // text += '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
+    // text += '<span aria-hidden="true">&times;</span></button></div>';
+    // text += '<div class="modal-body">';
+    // text += '<a href="';
+    // text += seatMap;
+    // text += '" target="_blank">';
+    // text += '<img src="';
+    // text += seatMap;
+    // text += '">';
+    // text += '</a></div>';
+    // text += '<div class="modal-footer"><button type="button" class="btn btn-light" data-dismiss="modal">Close</button></div></div></div></div>';
+    
+
+    // artist/team tab here
+    text += '<div id="artTabContent" class="tabcontent">';
+
+    if(category != undefined){
+      var categoryCheck = category.substring(0, category.indexOf("|") - 1);
+    }
+
+    
+
+    // if it's music event, show both photos and spotify info
+    if(category == 'Music' || categoryCheck == 'Music'){
+      if(performerArr[0] != null){    
+        $.ajax({
+          method: "GET",
+          crossDomain: "true",
+          url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/musichandle?artist=' + performerArr[0] +'&cx=004394602356333104116:vfroutcovcg' + '&imgSize=huge&imgType=news&num=8&searchType=image&key=AIzaSyBlMveOdqCYRAHF-JabEw1nesTH0q7XMLA',
+
+          success: function (data){
+            //http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/
+            console.log(data);
+            document.querySelector('.progress').style.visibility = 'hidden';
+
+            if(data != "Fail to get artist info"){
+              var spotifyBack = data[0];
+              var photoArr = [];
+
+              for(var i = 1; i < data.length; i++){
+                photoArr.push(data[i]);
+              }
+
+              var name;
+              var followers;
+              var popularity;
+              var checkAt;
+              var itemLength = spotifyBack.artists.items.length;
+              for(var i = 0; i < itemLength; i++){
+                if(spotifyBack.artists.items != null && spotifyBack.artists.items[i] !=null){
+                  name = spotifyBack.artists.items[i].name;
+                  
+                  text += '<div class="spotifyTable">';
+                  text += '<table id = "sptifyInfoTable" class="table" width=100% style="margin-top: 20px;"><tbody>';
+                  text += '<p align="center">';
+                  text += name;
+                  text += '</p>';
+                  text += '<tr><td width = 28%>Name</td>';
+                  text += '<td width = 72%>';
+                  text += name;
+                  text += '</td></tr>';
+
+                  if(spotifyBack.artists.items != null && spotifyBack.artists.items[i] !=null && spotifyBack.artists.items[i].followers != null){
+                    followers = spotifyBack.artists.items[i].followers.total;
+                    text += '<tr><td width = 28%>Followers</td>';
+                    text += '<td width = 72%>';
+                    text += followers;
+                    text += '</td></tr>';
+
+                    if(spotifyBack.artists.items != null && spotifyBack.artists.items[i] !=null){
+                      popularity = spotifyBack.artists.items[i].popularity;
+                      text += '<tr><td width = 28%>Popularity</td>';
+                      text += '<td width = 72%>';
+                      text += popularity;
+                      text += '</td></tr>';
+
+                      if(spotifyBack.artists.items != null && spotifyBack.artists.items[i] !=null && spotifyBack.artists.items[i].external_urls != null){
+                        checkAt = spotifyBack.artists.items[i].external_urls.spotify;
+                        text += '<tr><td width = 28%>Check At</td>';
+                        text += '<td width = 72%><a href="';
+                        text += checkAt;
+                        text += '" target="_blank">';
+                        text += 'Spotify</a>';
+                        text += '</td></tr>';
+                        text += '</tbody></table>';
+                        text += '</div>';
+                      }
+                    }
+                  }
+                }
+
+                var photos = photoArr[i]; // ith artist's photos
+
+                text += '<div class="artistPhotoContainer">';
+            text += '<div class = "row">';
+
+          text += '<div class = "column">';
+            for(var q = 0; q < 2; q ++){
+              text += '<a href="';
+              text += photos.items[q].link;
+              text += '" target="_blank">';
+              text += '<img src = "';
+                text += photos.items[q].link;
+                text += '">';
+                text += '</a>';
+            }
+            text += '</div>';
+
+            text += '<div class = "column">';
+            for(var q = 2; q < 5; q++){
+              text += '<a href="';
+              text += photos.items[q].link;
+              text += '" target="_blank">';
+                text += '<img src = "';
+                text += photos.items[q].link;
+                text += '">';
+                text += '</a>';
+            }
+            text += '</div>';
+
+            text += '<div class = "column">';
+            for(var q = 5; q < 8; q++){
+              text += '<a href="';
+              text += photos.items[q].link;
+              text += '" target="_blank">';
+                text += '<img src = "';
+                text += photos.items[q].link;
+                text += '">';
+                text += '</a>';
+            }
+            text += '</div>';
+
+            text += '</div>';
+
+            text += '</div>';
+
+              }
+            
+            text += '</div>'; // close tab for artTab
+
+            // resultTable.innerHTML = text;
+
+            // proceed for venue tab
+            text += '<div id="venueTabContent" class="tabcontent">';
+
+            $.ajax({
+            method: "Get",
+            crossDomain: "true",
+            url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/venuesearch?venue=' + venue,
+
+            success: function(data){
+              var address;
+              var cityState;
+              var phoneNumber;
+              var openHours;
+              var generalRule;
+              var childRule;
+
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].address != null){
+                address = data._embedded.venues[0].address.line1;
+                // console.log('address is: ' + address);
+              }
+
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].city != null && data._embedded.venues[0].state != null){
+                var city = data._embedded.venues[0].city.name;
+                var state = data._embedded.venues[0].state.name;
+                cityState = city + ', ' + state;
+                // console.log('cityState is: ' + cityState);
+              }
+
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].boxOfficeInfo != null){
+                phoneNumber = data._embedded.venues[0].boxOfficeInfo.phoneNumberDetail;
+                // console.log('phoneNumber is: ' + phoneNumber);
+              }
+              
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].boxOfficeInfo != null){
+                openHours = data._embedded.venues[0].boxOfficeInfo.openHoursDetail;
+                // console.log('openHours is: ' + openHours);
+              }
+
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].generalInfo != null){
+                generalRule = data._embedded.venues[0].generalInfo.generalRule;
+                // console.log('generalRule is: ' + generalRule);
+              }
+              
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].generalInfo != null){
+                childRule = data._embedded.venues[0].generalInfo.childRule;
+                // console.log('childRule is: ' + childRule);
+              }
+
+              text += '<table id = "venueTable" class="table" width=100% style="margin-top: 20px;"><tbody>';
+
+              text += '<p align="center"><b>';
+                  text += venue;
+                  text += '</b></p>';
+
+                  text += '<tr><td width = 15%>Address</td>';
+                  text += '<td width = 85%>';
+                  text += address;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>City</td>';
+                  text += '<td width = 85%>';
+                  text += cityState;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>Phone Number</td>';
+                  text += '<td width = 85%>';
+                  text += phoneNumber;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>Open Hours</td>';
+                  text += '<td width = 85%>';
+                  text += openHours;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>General Rule</td>';
+                  text += '<td width = 85%>';
+                  text += generalRule;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>Child Rule</td>';
+                  text += '<td width = 85%>';
+                  text += childRule;
+                  text += '</td></tr>';
+
+                  text += '</tbody></table>';
+
+                  text += '<div id="map"></div>';
+
+                  text += '</div>'; // close div for venueTabContent
+
+                  // text += '<div id="upcomingEventContent" class="tabcontent">';
+                  // text += '</div>';
+                  //resultTable.innerHTML = text;
+                  //alterColor();
+
+                  // Upcoming Event Content Here
+                  text += '<div id="upcomingEventContent" class="tabcontent">';
+                  $.ajax({
+                    method: "Get",
+                crossDomain: "true",
+                url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/upcomingevent?venue=' + venue,
+
+                success: function(data){
+
+                  if(data != "No Venue Info"){
+                    console.log('gets to upcomingevent');
+                    var comingEventNumber = data.resultsPage.results.event.length;
+                    var displayNameArr = [];
+                    var displayNameUrlArr = [];
+                    var artistArr = [];
+                    var dateTimeArr = [];
+                    var typeArr = [];
+
+                    for(var v = 0; v < comingEventNumber; v++){
+                      if(data.resultsPage.results != null && data.resultsPage.results.event!= null){
+                        var displayName = data.resultsPage.results.event[v].displayName;
+                        var displayNameUrl = data.resultsPage.results.event[v].uri;
+                        displayNameArr.push(displayName);
+                        displayNameUrlArr.push(displayNameUrl);
+                      }
+
+                      if(data.resultsPage.results != null && data.resultsPage.results.event!= null && data.resultsPage.results.event[v].performance!= null){
+                        var artists = data.resultsPage.results.event[v].performance[0].displayName;
+                        artistArr.push(artists);
+                      }
+
+                      if(data.resultsPage.results != null && data.resultsPage.results.event!= null && data.resultsPage.results.event[v].start != null){
+                        var cheat = data.resultsPage.results.event[v].displayName;
+                        var date = cheat.substring(cheat.indexOf("(") + 1, cheat.length - 1);
+                        if(data.resultsPage.results.event[v].start.time != null){
+                          var time = data.resultsPage.results.event[v].start.time;
+                          var dateTime = date+ ' ' + time;
+                        }
+                        else{
+                          var dateTime = date;
+                        }
+                        
+                        dateTimeArr.push(dateTime);
+                      }
+
+                      if(data.resultsPage.results != null && data.resultsPage.results.event!= null){
+                        var type = data.resultsPage.results.event[v].type;
+                        typeArr.push(type);
+                      }
+                    }
+
+                        text += '<div class = "form-group row ml-1 mt-4">'
+                        text += '<select class="form-control col-md-3" id="upcomingcategory" name="upcomingcategory"><option value="default">Default</option><option value="eventname">Event Name</option><option value="time">Time</option><option value="artist">Artist</option><option value="type">Type</option></select>';
+                        text += '<select class="form-control col-md-3" id="upOrDown" name="upOrDown"><option value="ascending">Ascending</option><option value="descending">Descending</option></select>';
+                        text += '</div>';
+                    for (var a = 0; a < 5; a++){
+                      text += '<div class= "card mt-2"><div class="card-body">';
+                      text += '<a href="';
+                      text += displayNameUrlArr[a];
+                      text += '" target="_blank">';
+                      text += displayNameArr[a];
+                      text += '</a>';
+                      text += '<br>';
+                      text += '<span style="color:orange;">';
+                      text += 'Artist: ';
+                      text += artistArr[a];
+                      text += '</span>';
+                      text += ' ';
+                      text += '<span style="color:grey;">';
+                      text += dateTimeArr[a];
+                      text += '</span>';
+                      text += '<br>';
+                      text += 'Type: ';
+                      text += typeArr[a];
+                      text += '</div>';
+                      text += '</div>';
+                    }
+
+                    text += '<button id="showMore" class="btn btn-primary btn-sm mt-4">Show More</button>';
+                    
+                    text += '</div>' // close div for upcomingEventContent
+                    detailTable.innerHTML = text;
+                  }
+
+                  else{
+                    text += '<table id="noRecord" class="table" width=100%><tr><td>No records.</td></tr></table>';
+                    text += '</div>'; // close div for upcomingEventContent
+                    detailTable.innerHTML = text;
+                  }
+                },
+
+                error: () => console.log('error')
+                  });
+
+
+            },
+            error: () => console.log('error')
+          });
+            }
+
+            else{
+              text += '<table id="noRecord" class="table" width=100%><tr><td>No records.</td></tr></table>';
+        text += '</div>'; // close div for artTabContent
+        // resultTable.innerHTML = text;
+
+        text += '<div id="venueTabContent" class="tabcontent">';
+        $.ajax({
+            method: "Get",
+            crossDomain: "true",
+            url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/venuesearch?venue=' + venue,
+            success: function(data){
+              var address;
+              var cityState;
+              var phoneNumber;
+              var openHours;
+              var generalRule;
+              var childRule;
+
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].address != null){
+                address = data._embedded.venues[0].address.line1;
+                console.log('address is: ' + address);
+              }
+
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].city != null && data._embedded.venues[0].state != null){
+                var city = data._embedded.venues[0].city.name;
+                var state = data._embedded.venues[0].state.name;
+                cityState = city + ', ' + state;
+                console.log('cityState is: ' + cityState);
+              }
+
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].boxOfficeInfo != null){
+                phoneNumber = data._embedded.venues[0].boxOfficeInfo.phoneNumberDetail;
+                console.log('phoneNumber is: ' + phoneNumber);
+              }
+              
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].boxOfficeInfo != null){
+                openHours = data._embedded.venues[0].boxOfficeInfo.openHoursDetail;
+                console.log('openHours is: ' + openHours);
+              }
+
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].generalInfo != null){
+                generalRule = data._embedded.venues[0].generalInfo.generalRule;
+                console.log('generalRule is: ' + generalRule);
+              }
+              
+              if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].generalInfo != null){
+                childRule = data._embedded.venues[0].generalInfo.childRule;
+                console.log('childRule is: ' + childRule);
+              }
+
+              text += '<table id = "venueTable" class="table" width=100% style="margin-top: 20px;"><tbody>';
+
+              text += '<p align="center"><b>';
+                  text += venue;
+                  text += '</b></p>';
+
+                  text += '<tr><td width = 15%>Address</td>';
+                  text += '<td width = 85%>';
+                  text += address;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>City</td>';
+                  text += '<td width = 85%>';
+                  text += cityState;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>Phone Number</td>';
+                  text += '<td width = 85%>';
+                  text += phoneNumber;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>Open Hours</td>';
+                  text += '<td width = 85%>';
+                  text += openHours;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>General Rule</td>';
+                  text += '<td width = 85%>';
+                  text += generalRule;
+                  text += '</td></tr>';
+
+                  text += '<tr><td width = 15%>Child Rule</td>';
+                  text += '<td width = 85%>';
+                  text += childRule;
+                  text += '</td></tr>';
+
+                  text += '</tbody></table>';
+
+                  text += '<div id="map"></div>';
+
+                  text += '</div>';
+
+                  // Upcoming Event Content Here
+                  text += '<div id="upcomingEventContent" class="tabcontent">';
+                  $.ajax({
+                    method: "Get",
+                crossDomain: "true",
+                url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/upcomingevent?venue=' + venue,
+
+                success: function(data){
+
+                  if(data != "No Venue Info"){
+                    console.log('gets to upcomingevent');
+                    var comingEventNumber = data.resultsPage.results.event.length;
+                    var displayNameArr = [];
+                    var displayNameUrlArr = [];
+                    var artistArr = [];
+                    var dateTimeArr = [];
+                    var typeArr = [];
+
+                    for(var v = 0; v < comingEventNumber; v++){
+                      if(data.resultsPage.results != null && data.resultsPage.results.event!= null){
+                        var displayName = data.resultsPage.results.event[v].displayName;
+                        var displayNameUrl = data.resultsPage.results.event[v].uri;
+                        displayNameArr.push(displayName);
+                        displayNameUrlArr.push(displayNameUrl);
+                      }
+
+                      if(data.resultsPage.results != null && data.resultsPage.results.event!= null && data.resultsPage.results.event[v].performance!= null){
+                        var artists = data.resultsPage.results.event[v].performance[0].displayName;
+                        artistArr.push(artists);
+                      }
+
+                      if(data.resultsPage.results != null && data.resultsPage.results.event!= null && data.resultsPage.results.event[v].start != null){
+                        var cheat = data.resultsPage.results.event[v].displayName;
+                        var date = cheat.substring(cheat.indexOf("(") + 1, cheat.length - 1);
+                        if(data.resultsPage.results.event[v].start.time != null){
+                          var time = data.resultsPage.results.event[v].start.time;
+                          var dateTime = date+ ' ' + time;
+                        }
+                        else{
+                          var dateTime = date;
+                        }
+                        
+                        dateTimeArr.push(dateTime);
+                      }
+
+                      if(data.resultsPage.results != null && data.resultsPage.results.event!= null){
+                        var type = data.resultsPage.results.event[v].type;
+                        typeArr.push(type);
+                      }
+                    }
+
+                        text += '<div class = "form-group row ml-1 mt-4">'
+                        text += '<select class="form-control col-md-3" id="upcomingcategory" name="upcomingcategory"><option value="default">Default</option><option value="eventname">Event Name</option><option value="time">Time</option><option value="artist">Artist</option><option value="type">Type</option></select>';
+                        text += '<select class="form-control col-md-3" id="upOrDown" name="upOrDown"><option value="ascending">Ascending</option><option value="descending">Descending</option></select>';
+                        text += '</div>';
+                    for (var a = 0; a < 5; a++){
+                      text += '<div class= "card mt-2"><div class="card-body">';
+                      text += '<a href="';
+                      text += displayNameUrlArr[a];
+                      text += '" target="_blank">';
+                      text += displayNameArr[a];
+                      text += '</a>';
+                      text += '<br>';
+                      text += '<span style="color:orange;">';
+                      text += 'Artist: ';
+                      text += artistArr[a];
+                      text += '</span>';
+                      text += ' ';
+                      text += '<span style="color:grey;">';
+                      text += dateTimeArr[a];
+                      text += '</span>';
+                      text += '<br>';
+                      text += 'Type: ';
+                      text += typeArr[a];
+                      text += '</div>';
+                      text += '</div>';
+                    }
+                    
+                    text += '<button id="showMore" class="btn btn-primary btn-sm mt-4">Show More</button>';
+                    text += '</div>' // close div for upcomingEventContent
+                    detailTable.innerHTML = text;
+                  }
+
+                  else{
+                    text += '<table id="noRecord" class="table" width=100%><tr><td>No records.</td></tr></table>';
+                    text += '</div>'; // close div for upcomingEventContent
+                    detailTable.innerHTML = text;
+                  }
+                },
+
+                error: () => console.log('error')
+                  });
+
+            },
+
+            error: () => console.log('error')
+          });
+
+
+            }
+            
+
+          },
+          error: () => console.log('error')
+
+          });
+        }
+
+    }
+
+    // not Music event, only show photos
+    else{
+      if(performerArr[0] != null){
+        if(performerArr[1] != null){
+          // if has two teams
+          $.ajax({
+            method: "GET",
+            crossDomain: "true",
+            url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/customizedsearch2?q=' + performerArr[0] +'&q2=' + performerArr[1] +'&cx=004394602356333104116:vfroutcovcg' + '&imgSize=huge&imgType=news&num=8&searchType=image&key=AIzaSyBlMveOdqCYRAHF-JabEw1nesTH0q7XMLA',  
+
+            success: function (data){
+
+              document.querySelector('.progress').style.visibility = 'hidden';
+              var firstTeam = data[0];
+              var secondTeam = data[1];
+
+              text += '<div id="firstTeamPhotos">'
+        text += '<p align="center">';
+              text += performerArr[0];
+              text += '</p>';
+
+              text += '<div class = "row">';
+
+              text += '<div class = "column">';
+              for(var i = 0; i < 2; i ++){
+                text += '<a href="';
+            text += firstTeam.items[i].link;
+            text += '" target="_blank">';
+              text += '<img src = "';
+                text += firstTeam.items[i].link;
+                text += '">';
+                text += '</a>';
+              }
+              text += '</div>';
+
+              text += '<div class = "column">';
+              for(var i = 2; i < 5; i++){
+                text += '<a href="';
+            text += firstTeam.items[i].link;
+            text += '" target="_blank">';
+                text += '<img src = "';
+                text += firstTeam.items[i].link;
+                text += '">';
+                text += '</a>';
+              }
+              text += '</div>';
+
+              text += '<div class = "column">';
+              for(var i = 5; i < 8; i++){
+                text += '<a href="';
+            text += firstTeam.items[i].link;
+            text += '" target="_blank">';
+                text += '<img src = "';
+                text += firstTeam.items[i].link;
+                text += '">';
+                text += '</a>';
+              }
+              text += '</div>';
+
+              text += '</div>';
+              text += '</div>';
+
+              text += '<div id="secondTeamPhotos">';
+              text += '<p align="center">';
+              text += performerArr[1];
+              text += '</p>';
+
+              text += '<div class = "row">';
+
+              text += '<div class = "column">';
+              for(var i = 0; i < 2; i ++){
+                text += '<a href="';
+            text += secondTeam.items[i].link;
+            text += '" target="_blank">';
+              text += '<img src = "';
+                text += secondTeam.items[i].link;
+                text += '">';
+                text += '</a>';
+              }
+              text += '</div>';
+
+              text += '<div class = "column">';
+              for(var i = 2; i < 5; i++){
+                text += '<a href="';
+            text += secondTeam.items[i].link;
+            text += '" target="_blank">';
+                text += '<img src = "';
+                text += secondTeam.items[i].link;
+                text += '">';
+                text == '</a>';
+              }
+              text += '</div>';
+
+              text += '<div class = "column">';
+              for(var i = 5; i < 8; i++){
+                text += '<a href="';
+            text += secondTeam.items[i].link;
+            text += '" target="_blank">';
+                text += '<img src = "';
+                text += secondTeam.items[i].link;
+                text += '">';
+                text += '</a>'
+              }
+              text += '</div>';
+
+              text += '</div>';
+              text += '</div>';
+
+              text += '</div>';
+              // resultTable.innerHTML = text;
+
+         // venue tab here
+        text += '<div id="venueTabContent" class="tabcontent">';
+
+        $.ajax({
+          method: "Get",
+          crossDomain: "true",
+          url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/venuesearch?venue=' + venue,
+
+          success: function(data){
+            var address;
+            var cityState;
+            var phoneNumber;
+            var openHours;
+            var generalRule;
+            var childRule;
+
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].address != null){
+              address = data._embedded.venues[0].address.line1;
+            }
+
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].city != null && data._embedded.venues[0].state != null){
+              var city = data._embedded.venues[0].city.name;
+              var state = data._embedded.venues[0].state.name;
+              cityState = city + ', ' + state;
+            }
+
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].boxOfficeInfo != null){
+              phoneNumber = data._embedded.venues[0].boxOfficeInfo.phoneNumberDetail;
+            }
+            
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].boxOfficeInfo != null){
+              openHours = data._embedded.venues[0].boxOfficeInfo.openHoursDetail;
+            }
+
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].generalInfo != null){
+              generalRule = data._embedded.venues[0].generalInfo.generalRule;
+            }
+            
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].generalInfo != null){
+              childRule = data._embedded.venues[0].generalInfo.childRule;
+            }
+
+            text += '<p align="center"><b>';
+                text += venue;
+                text += '</b></p>';
+          text += '<table id = "venueTable" class="table" width=100% style="margin-top: 20px;"><tbody>';
+
+                text += '<tr><td width = 15%>Address</td>';
+                text += '<td width = 85%>';
+                text += address;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>City</td>';
+                text += '<td width = 85%>';
+                text += cityState;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>Phone Number</td>';
+                text += '<td width = 85%>';
+                text += phoneNumber;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>Open Hours</td>';
+                text += '<td width = 85%>';
+                text += openHours;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>General Rule</td>';
+                text += '<td width = 85%>';
+                text += generalRule;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>Child Rule</td>';
+                text += '<td width = 85%>';
+                text += childRule;
+                text += '</td></tr>';
+
+                text += '</tbody></table>';
+
+                text += '<div id="map" class="mt-1"></div>';
+
+                text += '</div>'; // close div for venueTabContent
+                //alterColor();
+
+                // Upcoming Event Content Here
+                text += '<div id="upcomingEventContent" class="tabcontent">';
+                $.ajax({
+                  method: "Get",
+              crossDomain: "true",
+              url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/upcomingevent?venue=' + venue,
+
+              success: function(data){
+
+                if(data.resultsPage.results.event != undefined){
+                  var comingEventNumber = data.resultsPage.results.event.length;
+                  var displayNameArr = [];
+                  var displayNameUrlArr = [];
+                  var artistArr = [];
+                  var dateTimeArr = [];
+                  var typeArr = [];
+
+                  for(var v = 0; v < comingEventNumber; v++){
+                    if(data.resultsPage.results != null && data.resultsPage.results.event!= null){
+                      var displayName = data.resultsPage.results.event[v].displayName;
+                      var displayNameUrl = data.resultsPage.results.event[v].uri;
+                      displayNameArr.push(displayName);
+                      displayNameUrlArr.push(displayNameUrl);
+                    }
+
+                    if(data.resultsPage.results != null && data.resultsPage.results.event!= null && data.resultsPage.results.event[v].performance!= null){
+                      var artists = data.resultsPage.results.event[v].performance[0].displayName;
+                      artistArr.push(artists);
+                    }
+
+                    if(data.resultsPage.results != null && data.resultsPage.results.event!= null && data.resultsPage.results.event[v].start != null){
+                      var cheat = data.resultsPage.results.event[v].displayName;
+                      var date = cheat.substring(cheat.indexOf("(") + 1, cheat.length - 1);
+                      if(data.resultsPage.results.event[v].start.time != null){
+                        var time = data.resultsPage.results.event[v].start.time;
+                        var dateTime = date+ ' ' + time;
+                      }
+                      else{
+                        var dateTime = date;
+                      }
+                      
+                      dateTimeArr.push(dateTime);
+                    }
+
+                    if(data.resultsPage.results != null && data.resultsPage.results.event!= null){
+                      var type = data.resultsPage.results.event[v].type;
+                      typeArr.push(type);
+                    }
+                  }
+
+                      text += '<div class = "form-group row ml-1 mt-4">'
+                      text += '<select class="form-control col-md-3" id="upcomingcategory" name="upcomingcategory"><option value="default">Default</option><option value="eventname">Event Name</option><option value="time">Time</option><option value="artist">Artist</option><option value="type">Type</option></select>';
+                      text += '<select class="form-control col-md-3" id="upOrDown" name="upOrDown"><option value="ascending">Ascending</option><option value="descending">Descending</option></select>';
+                      text += '</div>';
+                  for (var a = 0; a < 5; a++){
+                    text += '<div class= "card mt-2"><div class="card-body">';
+                    text += '<a href="';
+                    text += displayNameUrlArr[a];
+                    text += '" target="_blank">';
+                    text += displayNameArr[a];
+                    text += '</a>';
+                    text += '<br>';
+                    text += '<span style="color:orange;">';
+                    text += 'Artist: ';
+                    text += artistArr[a];
+                    text += '</span>';
+                    text += ' ';
+                    text += '<span style="color:grey;">';
+                    text += dateTimeArr[a];
+                    text += '</span>';
+                    text += '<br>';
+                    text += 'Type: ';
+                    text += typeArr[a];
+                    text += '</div>';
+                    text += '</div>';
+                  }
+                  
+                  text += '<button id="showMore" class="btn btn-primary btn-sm mt-4">Show More</button>';
+                  text += '</div>' // close div for upcomingEventContent
+                  detailTable.innerHTML = text;
+                }
+                else{
+                  text += '<table id="noRecord" class="table" width=100%><tr><td>No records.</td></tr></table>';
+                  text += '</div>'; // close div for upcomingEventContent
+                  detailTable.innerHTML = text;
+                }
+                
+              },
+
+              error: () => console.log('error')
+                });
+
+                
+
+          },
+          error: () => console.log('error')
+        });
+
+            },
+
+            error: () => console.log('error')
+
+          });
+
+        }
+
+        // only one team
+        else{
+            $.ajax({
+            method: "GET",
+            crossDomain: "true",
+            url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/customizedsearch?q=' + performerArr[0] +'&cx=004394602356333104116:vfroutcovcg' + '&imgSize=huge&imgType=news&num=8&searchType=image&key=AIzaSyBlMveOdqCYRAHF-JabEw1nesTH0q7XMLA',  
+
+            success: function (data){
+              console.log('data is:' + data);
+              document.querySelector('.progress').style.visibility = 'hidden';
+
+              text += '<p align="center">';
+              text += performerArr[0];
+              text += '</p>';
+              text += '<div class = "row">';
+              text += '<div class = "column">';
+              for(var i = 0; i < 2; i ++){
+                text += '<a href="';
+            text += data.items[i].link;
+            text += '" target="_blank">';
+              text += '<img src = "';
+                text += data.items[i].link;
+                text += '">';
+                text += '</a>';
+              }
+              text += '</div>';
+
+              text += '<div class = "column">';
+              for(var i = 2; i < 5; i++){
+                text += '<a href="';
+            text += data.items[i].link;
+            text += '" target="_blank">';
+                text += '<img src = "';
+                text += data.items[i].link;
+                text += '">';
+                text += '</a>';
+              }
+              text += '</div>';
+
+              text += '<div class = "column">';
+              for(var i = 5; i < 8; i++){
+                text += '<a href="';
+            text += data.items[i].link;
+            text += '" target="_blank">';
+                text += '<img src = "';
+                text += data.items[i].link;
+                text += '">';
+                text += '</a>';
+              }
+              text += '</div>';
+
+              text += '</div>';
+              text += '</div>';
+              // resultTable.innerHTML = text;
+
+          // venue tab here
+        text += '<div id="venueTabContent" class="tabcontent">';
+
+        $.ajax({
+          method: "Get",
+          crossDomain: "true",
+          url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/venuesearch?venue=' + venue,
+
+          success: function(data){
+            var address;
+            var cityState;
+            var phoneNumber;
+            var openHours;
+            var generalRule;
+            var childRule;
+
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].address != null){
+              address = data._embedded.venues[0].address.line1;
+              console.log('address is: ' + address);
+            }
+
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].city != null && data._embedded.venues[0].state != null){
+              var city = data._embedded.venues[0].city.name;
+              var state = data._embedded.venues[0].state.name;
+              cityState = city + ', ' + state;
+              console.log('cityState is: ' + cityState);
+            }
+
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].boxOfficeInfo != null){
+              phoneNumber = data._embedded.venues[0].boxOfficeInfo.phoneNumberDetail;
+              console.log('phoneNumber is: ' + phoneNumber);
+            }
+            
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].boxOfficeInfo != null){
+              openHours = data._embedded.venues[0].boxOfficeInfo.openHoursDetail;
+              console.log('openHours is: ' + openHours);
+            }
+
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].generalInfo != null){
+              generalRule = data._embedded.venues[0].generalInfo.generalRule;
+              console.log('generalRule is: ' + generalRule);
+            }
+            
+            if(data._embedded.venues != null && data._embedded.venues[0] != null && data._embedded.venues[0].generalInfo != null){
+              childRule = data._embedded.venues[0].generalInfo.childRule;
+              console.log('childRule is: ' + childRule);
+            }
+
+            text += '<table id = "venueTable" class="table" width=100% style="margin-top: 20px;"><tbody>';
+
+            text += '<p align="center"><b>';
+                text += venue;
+                text += '</b></p>';
+
+                text += '<tr><td width = 15%>Address</td>';
+                text += '<td width = 85%>';
+                text += address;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>City</td>';
+                text += '<td width = 85%>';
+                text += cityState;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>Phone Number</td>';
+                text += '<td width = 85%>';
+                text += phoneNumber;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>Open Hours</td>';
+                text += '<td width = 85%>';
+                text += openHours;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>General Rule</td>';
+                text += '<td width = 85%>';
+                text += generalRule;
+                text += '</td></tr>';
+
+                text += '<tr><td width = 15%>Child Rule</td>';
+                text += '<td width = 85%>';
+                text += childRule;
+                text += '</td></tr>';
+
+                text += '</tbody></table>';
+
+                text += '<div id="map"></div>';
+                text += '</div>'; // close div for venueTabContent
+                //resultTable.innerHTML = text;
+                //alterColor();
+
+                // Upcoming Event Content Here
+                text += '<div id="upcomingEventContent" class="tabcontent">';
+                $.ajax({
+                  method: "Get",
+              crossDomain: "true",
+              url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/upcomingevent?venue=' + venue,
+
+              success: function(data){
+
+                if(data.resultsPage.results.event != undefined){
+                  var comingEventNumber = data.resultsPage.results.event.length;
+                  var displayNameArr = [];
+                  var displayNameUrlArr = [];
+                  var artistArr = [];
+                  var dateTimeArr = [];
+                  var typeArr = [];
+
+                  for(var v = 0; v < comingEventNumber; v++){
+                    if(data.resultsPage.results != null && data.resultsPage.results.event!= null){
+                      var displayName = data.resultsPage.results.event[v].displayName;
+                      var displayNameUrl = data.resultsPage.results.event[v].uri;
+                      displayNameArr.push(displayName);
+                      displayNameUrlArr.push(displayNameUrl);
+                    }
+
+                    if(data.resultsPage.results != null && data.resultsPage.results.event!= null && data.resultsPage.results.event[v].performance!= null){
+                      var artists = data.resultsPage.results.event[v].performance[0].displayName;
+                      artistArr.push(artists);
+                    }
+
+                    if(data.resultsPage.results != null && data.resultsPage.results.event!= null && data.resultsPage.results.event[v].start != null){
+                      var cheat = data.resultsPage.results.event[v].displayName;
+                      var date = cheat.substring(cheat.indexOf("(") + 1, cheat.length - 1);
+                      if(data.resultsPage.results.event[v].start.time != null){
+                        var time = data.resultsPage.results.event[v].start.time;
+                        var dateTime = date+ ' ' + time;
+                      }
+                      else{
+                        var dateTime = date;
+                      }
+                      
+                      dateTimeArr.push(dateTime);
+                    }
+
+                    if(data.resultsPage.results != null && data.resultsPage.results.event!= null){
+                      var type = data.resultsPage.results.event[v].type;
+                      typeArr.push(type);
+                    }
+                  }
+
+                      text += '<div class = "form-group row ml-1 mt-4">'
+                      text += '<select class="form-control col-md-3" id="upcomingcategory" name="upcomingcategory"><option value="default">Default</option><option value="eventname">Event Name</option><option value="time">Time</option><option value="artist">Artist</option><option value="type">Type</option></select>';
+                      text += '<select class="form-control col-md-3" id="upOrDown" name="upOrDown"><option value="ascending">Ascending</option><option value="descending">Descending</option></select>';
+                      text += '</div>';
+                  for (var a = 0; a < 5; a++){
+                    text += '<div class= "card mt-2"><div class="card-body">';
+                    text += '<a href="';
+                    text += displayNameUrlArr[a];
+                    text += '" target="_blank">';
+                    text += displayNameArr[a];
+                    text += '</a>';
+                    text += '<br>';
+                    text += '<span style="color:orange;">';
+                    text += 'Artist: ';
+                    text += artistArr[a];
+                    text += '</span>';
+                    text += ' ';
+                    text += '<span style="color:grey;">';
+                    text += dateTimeArr[a];
+                    text += '</span>';
+                    text += '<br>';
+                    text += 'Type: ';
+                    text += typeArr[a];
+                    text += '</div>';
+                    text += '</div>';
+                  }
+                  
+                  text += '<button id="showMore" class="btn btn-primary btn-sm mt-4">Show More</button>';
+                  text += '</div>' // close div for upcomingEventContent
+                  detailTable.innerHTML = text;
+                }
+                else{
+                  text += '<table id="noRecord" class="table" width=100%><tr><td>No records.</td></tr></table>';
+                  text += '</div>'; // close div for upcomingEventContent
+                  detailTable.innerHTML = text;
+                }
+                
+              },
+
+              error: () => console.log('error')
+                });
+
+          },
+          error: () => console.log('error')
+        });
+
+            },
+
+            error: () => console.log('error')
+
+          });
+
+        }
+        
+      }
+    }
+  }
+
+
+  function getEventDetails(i){
+    document.getElementById("detailButton").disabled = false;
+
+
+    resultTable.style.display = "none";
+    detailHeader.style.display = "block";
+    detailTable.style.display = "block";
+    document.querySelector('.progress').style.visibility = 'visible';
+
+    var nameTag = "event" + i;
+    var obj = document.getElementsByName(nameTag);
+    var theId = obj[0].id;
+
+    $.ajax({
+      method: "GET",
+      crossDomain: "true",
+      url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/eventdetail?eventId=' + theId,
+
+      success: function (data){
+        console.log(data) //data is the response from the backend
+        var eventTitle = data.name;
+
+        var performerArr = [];
+
+        if(data._embedded.attractions != null && data._embedded.attractions[0] != null){
+          var performerNumber = data._embedded.attractions.length;
+          for(var i = 0; i < performerNumber; i++){
+            var performer = data._embedded.attractions[i].name;
+            performerArr.push(performer);
+          } 
+        }
+        // else{
+        //  performerArr.push(data.name);
+        // }
+
+        var venue;
+        if(data._embedded.venues != null && data._embedded.venues[0] != null){
+          venue = data._embedded.venues[0].name;
+        }
+
+        var time;
+        if(data.dates != null && data.dates.start != null){
+          var localTime = data.dates.start.localTime;
+          var localDate = data.dates.start.localDate;
+          localDate = new Date(localDate);
+          var monthNames = [
+              "January", "February", "March",
+              "April", "May", "June", "July",
+              "August", "September", "October",
+              "November", "December"
+            ];
+
+          var monthIndex = localDate.getMonth();
+          var month = monthNames[monthIndex];
+          var day = localDate.getUTCDate();
+          var year = localDate.getFullYear();
+          time = month +' '+ day +', ' + year + ' ' + localTime;
+        }
+
+        var category;
+        if(data.classifications != null && data.classifications[0] !=null){
+          if(data.classifications[0].segment.name != null){
+            category = data.classifications[0].segment.name;
+          }
+          if(data.classifications[0].genre.name != null){
+            category += ' | ';
+            category += data.classifications[0].genre.name;
+          }
+          else if(category == undefined){
+            category = 'N/A';
+          }
+        }
+
+        var priceRange;
+        if(data.priceRanges != null && data.priceRanges[0].min != "Undefined"){
+          if(data.priceRanges[0].max != "Undefined"){
+            priceRange = '$';
+            priceRange += data.priceRanges[0].min;
+            priceRange += ' ~ ';
+            priceRange += '$';
+            priceRange += data.priceRanges[0].max;
+          }
+          else{
+            priceRange = '(Min_price)';
+            priceRange += '$';
+            priceRange += priceRanges[0].min;
+          }
+        }
+        else{
+          if(data.priceRanges != null && data.priceRanges[0].max != "Undefined"){
+            priceRange = '(Max_price)';
+            priceRange += '$';
+            priceRange += data.priceRanges[0].max;
+          }
+          else{
+            priceRange = null;
+          }
+        }
+
+        var ticketStatus;
+        if(data.dates != null && data.dates.status != null){
+          ticketStatus = data.dates.status.code;
+        }
+
+        var ticketUrl;
+        if(data.url != null){
+          ticketUrl = data.url;
+        }
+
+        var seatMap;
+        if(data.seatmap!=null && data.seatmap.staticUrl != null){
+          seatMap = data.seatmap.staticUrl;
+        }
+
+        createDetailTable(eventTitle, performerArr, venue, time, category, priceRange, ticketStatus, ticketUrl, seatMap);
+
+      },
+      error: () => console.log('error')
+    });
+  }
+
+  function generateTable(eventLength, eventIdArr, eventLocalDateArr, dateMap, idMap, nameIdMap){
+
+    var eventNameArr = [];
+    var eventCategoryArr = [];
+    var eventVenueArr = [];
+
+    var text = '<button id = "detailButton" class="btn btn-light btn-sm" onclick="detailButtonCliked()" disabled>Details<i class = "material-icons" style="vertical-align: middle;">keyboard_arrow_right</i></button><table id="eventSearchTable" class="table table-hover" width=100%><thead><tr><th scope="col" width=5%>#</th><th scope="col" width=15%>Date</th><th scope="col" width = 34%>Event</th><th scope="col" width=19%>Category</th><th scope="col" width=18%>Venue Info</th><th scope="col" width=9%>Favorite</th></tr></thead><tbody>';
+
+    // sort rows 
+    for(var i = 0; i < eventLength - 1; i++){
+      for(var j=i + 1; j < eventLength; j++){
+        var dateMin = eventLocalDateArr[i];
+        if(dateMin > eventLocalDateArr[j]){
+          var temp = eventLocalDateArr[j];
+          eventLocalDateArr[j] = dateMin;
+          eventLocalDateArr[i] = temp;
+        }
+      }
+    }
+
+    for(var m = 0; m < eventLength; m++){
+      var id = dateMap.get(eventLocalDateArr[m]);
+      var eventName = idMap.get(id)[0];
+      var eventCategory = idMap.get(id)[1];
+      var eventVenue = idMap.get(id)[2];
+      eventNameArr.push(eventName);
+      eventCategoryArr.push(eventCategory);
+      eventVenueArr.push(eventVenue);
+    }
+
+
+
+    for(var i = 0; i < eventLength; i++){
+      text += '<tr>';
+
+      for(var j = 0; j < 6; j++){
+        if(j == 0){
+          text += '<th scope="row">';
+          text += i + 1;
+          text += '</th>';
+        }
+        else if(j == 1){
+          text += '<td>';
+          text += eventLocalDateArr[i];
+          text += '</td>';
+        }
+        else if(j == 2){
+          var theId = nameIdMap.get(eventNameArr[i]);
+          text += '<td>';
+          text += '<span id="';
+          text += theId;
+          text += '" name="';
+          var theName = "event" + i;
+          text += theName;
+          text += '" onclick="getEventDetails(';
+          text += i;
+          text += ')" data-toggle="tooltip" data-placement="bottom" title="';
+          text += eventNameArr[i];
+          text += '" style="color:blue; cursor: pointer;">'
+          if(eventNameArr[i].length > 31){
+        var searchTerm = ' ';
+        var indexOfWhiteSpace = eventNameArr[i].indexOf(searchTerm);
+
+        while(indexOfWhiteSpace < 26){
+            var eventSubstring = eventNameArr[i].substring(indexOfWhiteSpace + 1, eventNameArr[i].length);
+            indexOfWhiteSpace = indexOfWhiteSpace + 1 + eventSubstring.indexOf(searchTerm);
+        }
+        var eventNameShow = eventNameArr[i].substring(0,indexOfWhiteSpace) + '...';
+
+      }
+      else{
+        var eventNameShow = eventNameArr[i];
+      }
+          text += eventNameShow;
+          text += '</span>';
+          text += '</td>';
+        }
+        else if(j == 3){
+          text += '<td>';
+          text += eventCategoryArr[i];
+          text += '</td>';
+        }
+        else if(j == 4){
+          text += '<td>';
+          text += eventVenueArr[i];
+          text += '</td>';
+        }
+        else{
+          text += '<td align = "center">';
+          text += '<button id="favoriateIcon" class="btn btn-light btn-sm"><i class="material-icons">star_border</i></button>';
+          text += '</td>';
+        }
+      }
+      text += '</tr>'
+    }
+    text += '</table>';
+    resultTable.innerHTML = text;
+
+  }
+
+  // event search code here
+  $("#search").on("click", function (event) {
+    detailHeader.style.display = "none";
+    detailTable.style.display = "none";
+    resultTable.style.display = "block";
+
+    document.querySelector('.progress').style.visibility = 'visible';
+
+    var keyword = $('#keyword')[0].value;
+    var choice = $('#category option:selected').val();
+    if($('#distance')[0].value == ""){
+      var distance = '10';
+    }
+    else{
+      var distance = $('#distance')[0].value;
+    }
+    var measurement = $('#measurement option:selected').val();
+
+    if(document.querySelector("#currentLocation").checked){
+      var userLat = document.getElementById('hidelat').value;
+      var userLon = document.getElementById('hidelon').value;
+      var userLocation = userLat +","+ userLon;
+    }
+    else if(document.querySelector("#otherLocation").checked){
+      var userLocation = $('#otherLocationInput')[0].value;
+    }
+
+    setTimeout(function(){
+      $.ajax({
+      method: "GET",
+      crossDomain: "true",
+      url: 'http://shawnnynodejsusc.us-west-1.elasticbeanstalk.com/route?keyword=' + keyword + '&choice=' + choice + '&distance=' + distance + '&measurement=' + measurement + '&userLocation=' + userLocation,
+
+      success: function (data) {
+          document.querySelector('.progress').style.visibility = 'hidden';
+        console.log(data) //data is the response from the backend
+
+        noEvent = data._embedded;
+        if(noEvent == null){
+          var noRecordText = '<table id="noRecord" class="table" width=100%><tr><td>No Records.</td></tr></table>';
+          resultTable.innerHTML = noRecordText;
+        }
+
+        
+        else{
+          var eventArr = data._embedded.events;
+          var eventLength = data._embedded.events.length;
+
+          var dateMap = new Map();
+          var idMap = new Map();
+          var nameIdMap = new Map();
+
+          var eventIdArr = [];
+          var eventLocalDateArr = [];
+
+          var eventName;
+          var eventCategory;
+          var eventVenue;
+
+          for(var i = 0; i < eventLength; i++){
+
+            var eventId = eventArr[i].id;
+            eventIdArr.push(eventId);
+            var eventLocalDate = eventArr[i].dates.start.localDate;
+            eventLocalDateArr.push(eventLocalDate);
+            eventName = eventArr[i].name;
+
+            if(eventArr[i].classifications != undefined){
+              var eventSegment = eventArr[i].classifications[0].segment.name;
+              var eventGenre = eventArr[i].classifications[0].genre.name;
+              eventCategory =  eventGenre + '-' + eventSegment;
+            }
+
+            if(eventArr[i]._embedded != undefined && eventArr[i]._embedded.venues != undefined){
+              eventVenue = eventArr[i]._embedded.venues[0].name;
+            }
+
+            dateMap.set(eventLocalDate, eventId);
+            idMap.set(eventId, [eventName, eventCategory, eventVenue]);
+            nameIdMap.set(eventName, eventId);
+          }
+
+          generateTable(eventLength, eventIdArr, eventLocalDateArr, dateMap, idMap, nameIdMap);
+        }
+
+      },
+      error: () => console.log('error')
+      });
+    }, 800);
+
+
+      event.preventDefault();
+  });
+</script>
+
+<script async defer src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDMiwLQglmBWZsPWiTPavsvJgtc_pJdgdQ&callback=initMap"></script>
+
+</body>
+
+</html>
